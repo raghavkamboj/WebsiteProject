@@ -14,10 +14,14 @@ repositories {
 
 dependencies {
 
-	compile files('C:/Users/nikim/Downloads/apache-log4j-2.13.3-bin/log4j-api-2.13.3.jar', 
-		'C:/Users/nikim/Downloads/apache-log4j-2.13.3-bin/log4j-core-2.13.3.jar',
-		'C:/Users/nikim/Downloads/commons-dbutils-1.7-bin/commons-dbutils-1.7/commons-dbutils-1.7.jar'
-		)
+	//compile files('C:/Users/nikim/Downloads/apache-log4j-2.13.3-bin/log4j-api-2.13.3.jar', 
+	//	'C:/Users/nikim/Downloads/apache-log4j-2.13.3-bin/log4j-core-2.13.3.jar',
+	//	'C:/Users/nikim/Downloads/commons-dbutils-1.7-bin/commons-dbutils-1.7/commons-dbutils-1.7.jar'
+	//	)
+	
+	compile files('./src/main/java/lib/commons-dbutils-1.7.jar',
+		'./src/main/java/lib/log4j-core-2.13.3.jar', 
+		'./src/main/java/lib/log4j-core-2.13.3.jar')
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.microsoft.sqlserver:mssql-jdbc'
