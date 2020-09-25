@@ -3,13 +3,14 @@ package com.quizwebsite.core.userservice;
 import org.apache.logging.log4j.*;
 
 import com.quizwebsite.core.usermodel.User;
-import com.quizwebsite.core.userservice.dao.UserDao;
-import com.quizwebsite.core.userservice.daoimplementation.UserDaoImplementation;
+import com.quizwebsite.core.userservice.repository.UserRepo;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 //IMPORTANT. REPLACE E stack trace and system out print lin with log4j logging later
@@ -19,7 +20,9 @@ public class UserLoginRegistrationService {
 	
 	private User currentUser;
 	
-	private UserDao serviceDAO = new UserDaoImplementation();
+	//private UserDao serviceDAO = new UserDaoImplementation();
+	@Autowired
+	private UserRepo repo;
 	
 	//constructors instantiate user
 	public UserLoginRegistrationService()
@@ -28,10 +31,11 @@ public class UserLoginRegistrationService {
 		currentUser = new User();
 	}
 	
-	public UserLoginRegistrationService(User current)
+	public UserLoginRegistrationService(User current, UserRepo repo)
 	{
 		super();
 		currentUser = current;
+		this.repo =repo;
 	}
 	
 	//add salt based on username
@@ -83,7 +87,13 @@ public class UserLoginRegistrationService {
 		//encrypt user input
 		String encryptedPass = encryptPass(password,username);
 		
-		String passDb = serviceDAO.getPassword(currentUser);
+		User temp = repo.findDistinctUserByUsername(currentUser.getUsername()).get(0);
+		
+		String passDb = null;
+		if(temp != null)
+			passDb = temp.getPass();
+		
+		//change to make it a response object eventually not just a boolean
 		
 		//verify password input by user 
 		if(encryptedPass.equals(passDb))
@@ -99,7 +109,16 @@ public class UserLoginRegistrationService {
 		currentUser.setUsername(username);
 		currentUser.setPass(encryptPass(password, username));
 		
-		return serviceDAO.addUser(currentUser);
+		User temp = repo.save(currentUser);
+		
+		//change to make it a response object eventually not just a boolean
+		
+		if( temp != null)
+			return true;
+		else 
+			return false;
+		
+		//return serviceDAO.addUser(currentUser);
 	}
 
 	
